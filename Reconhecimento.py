@@ -25,3 +25,4 @@ while True:
         break   
 
 webcam.release() #Libera a webcam
+cv2.destroyAllWindows() #Fecha todas as janelas abertas
