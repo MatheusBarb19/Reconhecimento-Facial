@@ -21,7 +21,7 @@ while True:
             desenho_facial.draw_detection(frame, rosto) #Desenha o rosto na imagem
 
     cv2.imshow("Reconhecimento Facial", frame) #Mostra a imagem na tela
-
-
+    if cv2.waitKey(5) == 27: #Verifica se a tecla ESC foi pressionada
+        break   
 
 webcam.release() #Libera a webcam
