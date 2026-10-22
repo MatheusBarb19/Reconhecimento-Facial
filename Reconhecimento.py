@@ -9,4 +9,19 @@ desenho_facial = mp.solutions.drawing_utils #Cria um objeto para desenhar o rost
 
 while True:
     verificador, frame = webcam.read() #Lê a imagem da webcam
-    
+
+    if not verificador: #Verifica se a imagem foi lida corretamente
+        break
+
+    #Reconhcer rosto dentro da lista
+    lista_facial = reconhecedor_rosto.process(frame) #Processa a imagem para reconhecer o rosto
+
+    if lista_facial.detections: #Verifica se o rosto foi reconhecido
+        for rosto in lista_facial.detections: #Percorre a lista de rostos reconhecidos
+            desenho_facial.draw_detection(frame, rosto) #Desenha o rosto na imagem
+
+    cv2.imshow("Reconhecimento Facial", frame) #Mostra a imagem na tela
+
+
+
+webcam.release() #Libera a webcam
