@@ -1,3 +1,4 @@
+#OBJETIVO: Reconhecimento facial em tempo real utilizando a biblioteca mediapipe e OpenCV.
 import cv2 #Bilbioteca para processamento de imagens
 import mediapipe as mp #Bibliteoca de reconhecimento de imagens
 
