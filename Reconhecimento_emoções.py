@@ -19,3 +19,13 @@ while True:
 
         #Exibe na tela a emoção dominante
         cv2.putText(frame, f"Emocao: {emocao}", (20,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+
+    except Exception as erro:
+        print(f"Error:", erro)
+
+    cv2.imshow("Reconhecimento de Emoções", frame)  # Mostra a imagem na tela
+    if cv2.waitKey(5) == 27:  # Verifica se a tecla ESC foi pressionada
+        break
+
+webcam.release()  # Libera a webcam
+cv2.destroyAllWindows()  # Fecha todas as janelas abertas
