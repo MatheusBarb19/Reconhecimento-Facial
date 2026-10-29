@@ -1,65 +1,81 @@
-#OBJETIVO: Reconhecimento facial em tempo real utilizando a biblioteca mediapipe e OpenCV.
-import cv2 #Bilbioteca para processamento de imagens
-import mediapipe as mp #Bibliteoca de reconhecimento de imagens
 
-#=========================================
-#Inicilização da WebCam
-#=========================================
+# OBJETIVO: Detectar rostos em tempo real utilizando OpenCV e MediaPipe.
 
-webcam = cv2.VideoCapture(0) #Inicia a webcam
+import cv2  # Biblioteca utilizada para capturar e processar imagens.
+import mediapipe as mp  # Biblioteca utilizada para detectar rostos.
 
-#Verifica se a webcam foi iniciada corretamente
+# ============================================================
+# 1. INICIALIZAÇÃO DA WEBCAM
+# ============================================================
+
+webcam = cv2.VideoCapture(0)  # Abre a webcam padrão do computador.
+
+# Verifica se a webcam foi aberta corretamente.
 if not webcam.isOpened():
-    print("Erro ao abrir a webcam")
-    exit() #Encerra o programa caso a webcam não tenha sido iniciada corretamente
+    print("Erro: não foi possível acessar a webcam.")
+    exit()
 
-#=========================================
-#Configuração do Reconhecimento Facial
-#=========================================
+# ============================================================
+# 2. CONFIGURAÇÃO DA DETECÇÃO FACIAL
+# ============================================================
 
-reconhecer_rosto = mp.solutions.face_detection #Inicia o reconhecimento facial
-reconhecedor_rosto = reconhecer_rosto.FaceDetection(model_selection=0, min_detection_confidence=0.6) #Cria um objeto para o reconhecimento facial
-desenho_facial = mp.solutions.drawing_utils #Cria um objeto para desenhar o rosto
+reconhecer_rosto = mp.solutions.face_detection  # Acessa a solução de detecção facial do MediaPipe.
 
+# Cria o detector facial.
+# model_selection=0: modelo indicado para rostos próximos à câmera.
+# min_detection_confidence=0.6: confiança mínima de 60% para aceitar uma detecção.
+reconhecedor_rosto = reconhecer_rosto.FaceDetection(
+    model_selection=0,
+    min_detection_confidence=0.6
+)
 
-#=========================================
-#Captura e Processamento de Quadros
-#=========================================
+# Ferramenta utilizada para desenhar as detecções na imagem.
+desenho_facial = mp.solutions.drawing_utils
+
+# ============================================================
+# 3. CAPTURA E PROCESSAMENTO DOS QUADROS
+# ============================================================
 
 try:
     while True:
-        verificador, frame = webcam.read() #Lê a imagem da webcam
 
-        if not verificador: #Verifica se a imagem foi lida corretamente
-            print("Erro ao capturar o quadro da webcam")
+        # Captura um quadro da webcam.
+        verificador, frame = webcam.read()
+
+        # Encerra o programa se a imagem não for capturada corretamente.
+        if not verificador:
+            print("Erro: não foi possível capturar a imagem.")
             break
 
-        #Reconhcer rosto dentro da lista
-        lista_facial = reconhecedor_rosto.process(frame) #Processa a imagem para reconhecer o rosto
+        # Converte a imagem de BGR para RGB.
+        # O OpenCV utiliza BGR por padrão, enquanto o MediaPipe espera RGB.
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        if lista_facial.detections: #Verifica se o rosto foi reconhecido
-            for rosto in lista_facial.detections: #Percorre a lista de rostos reconhecidos
-                desenho_facial.draw_detection(frame, rosto) #Desenha o rosto na imagem
+        # Envia a imagem convertida para o detector facial.
+        lista_facial = reconhecedor_rosto.process(frame_rgb)
 
-        cv2.imshow("Reconhecimento Facial", frame) #Mostra a imagem na tela
-        if cv2.waitKey(5) == 27: #Verifica se a tecla ESC foi pressionada
+        # Verifica se algum rosto foi detectado.
+        if lista_facial.detections:
+
+            # Percorre todos os rostos encontrados no quadro.
+            for rosto in lista_facial.detections:
+
+                # Desenha a caixa delimitadora e os indicadores da detecção.
+                desenho_facial.draw_detection(frame, rosto)
+
+        # Exibe o quadro com as detecções na tela.
+        cv2.imshow("Deteccao Facial em Tempo Real", frame)
+
+        # Aguarda 5 milissegundos e verifica se a tecla ESC foi pressionada.
+        if cv2.waitKey(5) & 0xFF == 27:
             break
-while True:
-    verificador, frame = webcam.read() #Lê a imagem da webcam
 
-    if not verificador: #Verifica se a imagem foi lida corretamente
-        break
+finally:
+    # Libera a webcam mesmo se ocorrer algum erro durante a execução.
+    webcam.release()
 
-    #Reconhcer rosto dentro da lista
-    lista_facial = reconhecedor_rosto.process(frame) #Processa a imagem para reconhecer o rosto
+    # Fecha todas as janelas abertas pelo OpenCV.
+    cv2.destroyAllWindows()
 
-    if lista_facial.detections: #Verifica se o rosto foi reconhecido
-        for rosto in lista_facial.detections: #Percorre a lista de rostos reconhecidos
-            desenho_facial.draw_detection(frame, rosto) #Desenha o rosto na imagem
-
-    cv2.imshow("Reconhecimento Facial", frame) #Mostra a imagem na tela
-    if cv2.waitKey(5) == 27: #Verifica se a tecla ESC foi pressionada
-        break   
-
-webcam.release() #Libera a webcam
-cv2.destroyAllWindows() #Fecha todas as janelas abertas
+    # Encerra o detector e libera seus recursos.
+    reconhecedor_rosto.close()
