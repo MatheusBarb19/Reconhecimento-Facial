@@ -54,6 +54,12 @@ try:
         # Envia a imagem convertida para o detector facial.
         lista_facial = reconhecedor_rosto.process(frame_rgb)
 
+        quantidade_rostos = (
+            len(lista_facial.detections)
+            if lista_facial.detections
+            else 0
+        )   
+        
         # Verifica se algum rosto foi detectado.
         if lista_facial.detections:
 
@@ -63,8 +69,26 @@ try:
                 # Desenha a caixa delimitadora e os indicadores da detecção.
                 desenho_facial.draw_detection(frame, rosto)
 
-        # Exibe o quadro com as detecções na tela.
-        cv2.imshow("Deteccao Facial em Tempo Real", frame)
+#================================
+# Exibição da Contagem na Tela
+#================================
+
+        #define o texto qe será exibido na tela
+        texto = f"Rostos detectados: {quantidade_rostos}"
+
+        # Escreve a quantidade de rostos no canto superior esquerdo.
+        cv2.putText(
+            frame,  # Imagem em que o texto será desenhado.
+            texto,  # Texto que será exibido.
+            (20, 40),  # Posição do texto: X=20, Y=40.
+            cv2.FONT_HERSHEY_SIMPLEX,  # Fonte utilizada.
+            0.8,  # Tamanho do texto.
+            (0, 255, 0),  # Cor verde em formato BGR.
+            2  # Espessura das letras.
+        )
+
+        # Exibe a imagem com as detecções e a contagem.
+        cv2.imshow("Deteccao e Contagem de Rostos", frame)
 
         # Aguarda 5 milissegundos e verifica se a tecla ESC foi pressionada.
         if cv2.waitKey(5) & 0xFF == 27:
