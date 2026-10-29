@@ -23,7 +23,7 @@ while True:
     except Exception as erro:
         print(f"Error:", erro)
 
-    cv2.imshow("Reconhecimento de Emoções", frame)  # Mostra a imagem na tela
+    cv2.imshow("Reconhecimento de Emocoes", frame)  # Mostra a imagem na tela
     if cv2.waitKey(5) == 27:  # Verifica se a tecla ESC foi pressionada
         break
 
