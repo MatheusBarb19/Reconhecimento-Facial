@@ -53,3 +53,21 @@ if not webcam.isOpened():
 
 print("Webcam inicializada com sucesso!")
 
+# -------- Processamento de Quadros da Webcam --------- #
+
+tempo_inicial = time.monotonic()  # Marca o tempo inicial para cálculo de FPS
+
+try:
+    with FaceLandmarker.create_from_options(opcoes) as detector: #Carrega o modelo
+
+        while True:
+            # Captura um quadro da webcam.
+            sucesso, frame = webcam.read()
+
+            if not sucesso:
+                print("Erro: não foi possível capturar o quadro da webcam.")
+                break
+
+        imagem_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Converte o quadro para RGB
+
+        imagem_mp = mp.Image(image_format=mp.ImageFormat.SRGB, data=imagem_rgb)  # Cria uma imagem compatível com MediaPipe
