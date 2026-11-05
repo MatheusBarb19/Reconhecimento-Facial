@@ -93,3 +93,15 @@ try:
 
                         # Desenha um círculo no ponto facial detectado
                         cv2.circle(frame, (x_pixel, y_pixel), 2, (0, 255, 0), -1)
+
+            #exibe o resultado na tela
+            cv2.imshow("VigilantEye - Monitoramento Facial", frame)
+
+            #Encerra o programa quando a tecla 'ESC' for pressionada
+            if cv2.waitKey(1) == 27:
+                break
+
+finally:
+    # Libera a webcam e fecha todas as janelas abertas.
+    webcam.release()
+    cv2.destroyAllWindows()
