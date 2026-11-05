@@ -1,49 +1,53 @@
-# 🎭 Reconhecimento Facial e Emoções com Python
+# 🎭 Reconhecimento Facial e Análise de Emoções com Python
 
-Projeto desenvolvido em Python para estudo de Visão Computacional e Inteligência Artificial utilizando OpenCV, MediaPipe e DeepFace.
+Projeto desenvolvido em **Python** com foco no estudo de **Visão Computacional e Inteligência Artificial**, utilizando OpenCV, MediaPipe e DeepFace.
+
+O objetivo é explorar técnicas de detecção facial, processamento de imagens, estimativa de idade e classificação de emoções, tanto em imagens estáticas quanto em tempo real através da webcam.
 
 ## 📋 Funcionalidades
 
-O projeto contém três aplicações:
+O projeto é composto por três aplicações independentes:
 
-### 👤 Detecção de Rostos
+### 👤 1. Detecção Facial em Tempo Real
 
-Utiliza a biblioteca MediaPipe para identificar rostos em tempo real através da webcam.
+Utiliza a biblioteca **MediaPipe** em conjunto com **OpenCV** para detectar rostos através da webcam.
 
-**Tecnologias utilizadas:**
+**Principais recursos:**
+- Captura de vídeo em tempo real.
+- Detecção de rostos.
+- Contagem de rostos identificados na imagem.
+- Exibição das detecções na tela.
+
+**Tecnologias:**
 - Python
 - OpenCV
 - MediaPipe
 
----
+### 😊 2. Análise Facial em Imagens
 
-### 😊 Reconhecimento de Emoções e Estimativa de Idade em Imagens
+Utiliza a biblioteca **DeepFace** para analisar uma imagem e retornar informações estimadas sobre as características faciais.
 
-Analisa uma imagem e identifica:
-
-- Emoção predominante
-- Idade estimada
-
-**Tecnologias utilizadas:**
-- Python
-- OpenCV
-- DeepFace
+**Informações analisadas:**
+- Estimativa de idade.
+- Classificação da emoção predominante.
 
 **Exemplo de saída:**
 
 ```text
-Idade: 23
-Emoção: happy
+Idade estimada: 23
+Emoção predominante: happy
 ```
 
----
+**Tecnologias:**
+- Python
+- OpenCV
+- DeepFace
 
-### 📹 Reconhecimento de Emoções em Tempo Real
+### 📹 3. Análise de Emoções em Tempo Real
 
-Captura imagens da webcam e identifica a emoção predominante do usuário em tempo real.
+Realiza a captura de imagens através da webcam e utiliza o DeepFace para classificar a expressão facial predominante.
 
-Emoções detectadas:
-
+**Classificações possíveis:**
 - Happy 😄
 - Sad 😢
 - Angry 😠
@@ -52,81 +56,109 @@ Emoções detectadas:
 - Disgust 🤢
 - Neutral 😐
 
-**Tecnologias utilizadas:**
+**Tecnologias:**
 - Python
 - OpenCV
 - DeepFace
+- Webcam
 
----
+## 🛠️ Tecnologias e Bibliotecas
 
-## 🛠️ Bibliotecas Utilizadas
+| Tecnologia | Aplicação |
+|---|---|
+| Python | Linguagem de programação |
+| OpenCV | Captura e processamento de imagens |
+| MediaPipe | Detecção facial |
+| DeepFace | Análise facial e classificação de emoções |
+| TensorFlow | Suporte a modelos de inteligência artificial |
 
-```bash
-pip install opencv-contrib-python
-pip install mediapipe
-pip install deepface
-pip install tensorflow
-pip install werkzeug
-```
+## ⚙️ Instalação e Configuração
 
-## 📂 Estrutura do Projeto
+### Pré-requisitos
 
-```text
-📁 Reconhecimento-Facial
-│
-├── Reconhecimento.py
-├── Reconhecimento_rosto.py
-├── Reconhecimento_emocoes.py
-├── Pipfile
-└── README.md
-```
+- Python instalado.
+- Git instalado.
+- Webcam para executar as aplicações em tempo real.
 
-## 🚀 Como Executar
-
-Clone o repositório:
+### 1. Clone o repositório
 
 ```bash
 git clone https://github.com/MatheusBarb19/Reconhecimento-Facial.git
 ```
 
-Acesse a pasta:
+### 2. Acesse a pasta do projeto
 
 ```bash
 cd Reconhecimento-Facial
 ```
 
-Execute o arquivo desejado:
+### 3. Instale as dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Execute uma das aplicações
+
+**Detecção facial:**
 
 ```bash
 python Reconhecimento.py
 ```
 
-ou
+**Análise facial em imagem:**
 
 ```bash
 python Reconhecimento_rosto.py
 ```
 
-ou
+**Análise de emoções em tempo real:**
 
 ```bash
 python Reconhecimento_emocoes.py
 ```
 
-## 🎯 Objetivo
+## 📂 Estrutura do Projeto
 
-Este projeto foi desenvolvido com o objetivo de praticar:
+```text
+Reconhecimento-Facial/
+│
+├── Reconhecimento.py
+├── Reconhecimento_rosto.py
+├── Reconhecimento_emocoes.py
+├── requirements.txt
+├── Pipfile
+└── README.md
+```
 
-- Visão Computacional
-- Processamento de Imagens
-- Reconhecimento Facial
-- Inteligência Artificial
-- Git e GitHub
-- Python
+## 🎯 Objetivos de Aprendizado
+
+Este projeto foi desenvolvido para colocar em prática conhecimentos relacionados a:
+
+- Programação com Python.
+- Visão Computacional.
+- Processamento de Imagens.
+- Detecção Facial.
+- Inteligência Artificial.
+- Utilização de bibliotecas e modelos de IA.
+- Gerenciamento de projetos com Git e GitHub.
+
+## ⚠️ Observações e Limitações
+
+- A idade apresentada pelo sistema é uma estimativa gerada pelo modelo.
+- As emoções são classificações computacionais baseadas em expressões faciais e não representam necessariamente o estado emocional real de uma pessoa.
+- A precisão dos resultados pode variar conforme iluminação, qualidade da imagem, posição do rosto e características do modelo utilizado.
+- Este projeto possui finalidade educacional e experimental, não sendo destinado a diagnósticos ou avaliações psicológicas.
 
 ## 👨‍💻 Autor
 
-Desenvolvido por **Matheus Barbosa**
+**Matheus Barbosa**
 
-GitHub:
-https://github.com/MatheusBarb19
+Desenvolvedor em constante aprendizado, explorando Python, Inteligência Artificial e Visão Computacional.
+
+- GitHub: [MatheusBarb19](https://github.com/MatheusBarb19)
+- Repositório: [Reconhecimento Facial](https://github.com/MatheusBarb19/Reconhecimento-Facial)
+
+---
+
+⭐ Se este projeto despertou seu interesse, fique à vontade para explorar o código e acompanhar minha evolução!
