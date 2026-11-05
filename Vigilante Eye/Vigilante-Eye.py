@@ -68,6 +68,28 @@ try:
                 print("Erro: não foi possível capturar o quadro da webcam.")
                 break
 
-        imagem_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Converte o quadro para RGB
+            imagem_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Converte o quadro para RGB
 
-        imagem_mp = mp.Image(image_format=mp.ImageFormat.SRGB, data=imagem_rgb)  # Cria uma imagem compatível com MediaPipe
+            imagem_mp = mp.Image(image_format=mp.ImageFormat.SRGB, data=imagem_rgb)  # Cria uma imagem compatível com MediaPipe
+
+            #Calcula o tempo em milissegundos 
+            timestamp_ms = int((time.monotonic() - tempo_inicial) * 1000)
+
+            #Realiza a detecção facial
+            resultado = detector.detect_for_video(imagem_mp, timestamp_ms)
+
+            #Verifica se algum rosto foi detectado
+            if resultado.face_landmarks:
+
+                #Percorre os pontos faciais encontrados
+                for rosto in resultado.face_landmarks:
+                    altura, largura, _ = frame.shape  # Obtém as dimensões do quadro
+
+                    for ponto in rosto:
+                        
+                        # Converte as coordenadas normalizadas para coordenadas de pixel
+                        x_pixel = int(ponto.x * largura)
+                        y_pixel = int(ponto.y * altura)
+
+                        # Desenha um círculo no ponto facial detectado
+                        cv2.circle(frame, (x_pixel, y_pixel), 2, (0, 255, 0), -1)
