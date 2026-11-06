@@ -1,31 +1,30 @@
-# 🎭 Reconhecimento Facial e Análise de Emoções com Python
+# 🎭 Visão Computacional e Inteligência Artificial com Python
 
-Projeto desenvolvido em **Python** com foco no estudo de **Visão Computacional e Inteligência Artificial**, utilizando OpenCV, MediaPipe e DeepFace.
+Repositório dedicado ao desenvolvimento de aplicações práticas utilizando **Python, Visão Computacional e Inteligência Artificial**.
 
-O objetivo é explorar técnicas de detecção facial, processamento de imagens, estimativa de idade e classificação de emoções, tanto em imagens estáticas quanto em tempo real através da webcam.
+O objetivo é explorar técnicas de detecção facial, processamento de imagens, análise de expressões faciais e monitoramento de sinais visuais associados à sonolência.
 
-## 📋 Funcionalidades
+Atualmente, o repositório reúne quatro aplicações independentes, desenvolvidas como parte dos meus estudos e evolução na área de tecnologia.
 
-O projeto é composto por três aplicações independentes:
+## 📋 Projetos
 
-### 👤 1. Detecção Facial em Tempo Real
+### 👤 1. Detecção e Contagem de Rostos em Tempo Real
 
-Utiliza a biblioteca **MediaPipe** em conjunto com **OpenCV** para detectar rostos através da webcam.
+Aplicação desenvolvida com **OpenCV e MediaPipe** para detectar rostos através da webcam e contabilizar as detecções realizadas em cada quadro.
 
-**Principais recursos:**
+**Funcionalidades:**
 - Captura de vídeo em tempo real.
-- Detecção de rostos.
-- Contagem de rostos identificados na imagem.
-- Exibição das detecções na tela.
+- Detecção facial.
+- Contagem de rostos identificados.
+- Exibição das detecções na imagem.
 
-**Tecnologias:**
-- Python
-- OpenCV
-- MediaPipe
+**Tecnologias:** Python, OpenCV e MediaPipe.
+
+**Arquivo:** `detecção_de_Rosto.py`
 
 ### 😊 2. Análise Facial em Imagens
 
-Utiliza a biblioteca **DeepFace** para analisar uma imagem e retornar informações estimadas sobre as características faciais.
+Aplicação que utiliza a biblioteca **DeepFace** para analisar imagens estáticas e retornar estimativas relacionadas ao rosto identificado.
 
 **Informações analisadas:**
 - Estimativa de idade.
@@ -38,14 +37,13 @@ Idade estimada: 23
 Emoção predominante: happy
 ```
 
-**Tecnologias:**
-- Python
-- OpenCV
-- DeepFace
+**Tecnologias:** Python, OpenCV e DeepFace.
 
-### 📹 3. Análise de Emoções em Tempo Real
+**Arquivo:** `Reconhecimento_rosto.py`
 
-Realiza a captura de imagens através da webcam e utiliza o DeepFace para classificar a expressão facial predominante.
+### 📹 3. Reconhecimento de Emoções em Tempo Real
+
+Aplicação que utiliza a webcam para capturar imagens continuamente e analisar expressões faciais com o DeepFace.
 
 **Classificações possíveis:**
 - Happy 😄
@@ -56,11 +54,37 @@ Realiza a captura de imagens através da webcam e utiliza o DeepFace para classi
 - Disgust 🤢
 - Neutral 😐
 
-**Tecnologias:**
-- Python
-- OpenCV
-- DeepFace
-- Webcam
+A aplicação também realiza estimativas de idade e apresenta os resultados durante a captura de vídeo.
+
+**Tecnologias:** Python, OpenCV e DeepFace.
+
+**Arquivo:** `Reconhecimento_emoções.py`
+
+### 👁️ 4. VigilantEye — Real-Time Driver Drowsiness Monitoring System
+
+Projeto experimental desenvolvido com o objetivo de explorar técnicas de Visão Computacional e Inteligência Artificial para identificar sinais visuais associados à sonolência de condutores.
+
+A aplicação utiliza o **MediaPipe Face Landmarker** para detectar pontos de referência faciais em tempo real através da webcam.
+
+**Etapa atualmente implementada:**
+- Captura de vídeo em tempo real.
+- Detecção facial.
+- Identificação e visualização de pontos de referência (*facial landmarks*).
+
+**Próximas etapas planejadas:**
+- Análise da abertura e do fechamento dos olhos.
+- Identificação de padrões associados a piscadas prolongadas.
+- Análise da abertura da boca para investigar possíveis bocejos.
+- Combinação de indicadores visuais.
+- Desenvolvimento de alertas.
+
+**Tecnologias:** Python, OpenCV, MediaPipe e NumPy.
+
+**Arquivo principal:** `Vigilante-Eye.py`
+
+**Modelo utilizado:** `face_landmarker.task`
+
+> **Observação:** VigilantEye é um protótipo experimental e educacional. Não é um equipamento certificado de segurança e não deve ser utilizado como substituto de sistemas de monitoramento validados ou da atenção do condutor.
 
 ## 🛠️ Tecnologias e Bibliotecas
 
@@ -68,15 +92,16 @@ Realiza a captura de imagens através da webcam e utiliza o DeepFace para classi
 |---|---|
 | Python | Linguagem de programação |
 | OpenCV | Captura e processamento de imagens |
-| MediaPipe | Detecção facial |
+| MediaPipe | Detecção facial e pontos de referência |
 | DeepFace | Análise facial e classificação de emoções |
 | TensorFlow | Suporte a modelos de inteligência artificial |
+| NumPy | Operações e processamento numérico |
 
 ## ⚙️ Instalação e Configuração
 
 ### Pré-requisitos
 
-- Python instalado.
+- Python 3.11.
 - Git instalado.
 - Webcam para executar as aplicações em tempo real.
 
@@ -86,69 +111,105 @@ Realiza a captura de imagens através da webcam e utiliza o DeepFace para classi
 git clone https://github.com/MatheusBarb19/Reconhecimento-Facial.git
 ```
 
-### 2. Acesse a pasta do projeto
+### 2. Acesse a pasta
 
 ```bash
 cd Reconhecimento-Facial
 ```
 
-### 3. Instale as dependências
+### 3. Crie um ambiente virtual
+
+```bash
+python -m venv venv
+```
+
+### 4. Ative o ambiente virtual
+
+No Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+### 5. Instale as dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Execute uma das aplicações
+Confira se o arquivo `requirements.txt` contém as dependências necessárias para todos os projetos, incluindo MediaPipe e NumPy para o VigilantEye.
 
-**Detecção facial:**
+## ▶️ Como executar os projetos
+
+Execute os comandos a partir da pasta principal do repositório.
+
+**Detecção e contagem de rostos:**
 
 ```bash
-python Reconhecimento.py
+python detecção_de_Rosto.py
 ```
 
-**Análise facial em imagem:**
+**Análise facial em imagens:**
 
 ```bash
 python Reconhecimento_rosto.py
 ```
 
-**Análise de emoções em tempo real:**
+**Reconhecimento de emoções em tempo real:**
 
 ```bash
-python Reconhecimento_emocoes.py
+python Reconhecimento_emoções.py
 ```
 
-## 📂 Estrutura do Projeto
+**VigilantEye:**
+
+```bash
+python "Vigilante Eye/Vigilante-Eye.py"
+```
+
+## 📂 Estrutura do Repositório
 
 ```text
 Reconhecimento-Facial/
 │
-├── Reconhecimento.py
+├── detecção_de_Rosto.py
 ├── Reconhecimento_rosto.py
-├── Reconhecimento_emocoes.py
+├── Reconhecimento_emoções.py
+│
+├── teste.jpg
 ├── requirements.txt
 ├── Pipfile
-└── README.md
+├── README.md
+│
+└── Vigilante Eye/
+    │
+    ├── Vigilante-Eye.py
+    ├── descrição.txt
+    │
+    └── models/
+        └── face_landmarker.task
 ```
 
 ## 🎯 Objetivos de Aprendizado
 
-Este projeto foi desenvolvido para colocar em prática conhecimentos relacionados a:
+Este repositório representa minha evolução prática no desenvolvimento de aplicações utilizando:
 
 - Programação com Python.
 - Visão Computacional.
-- Processamento de Imagens.
-- Detecção Facial.
+- Processamento de imagens e vídeos.
+- Detecção e análise facial.
 - Inteligência Artificial.
 - Utilização de bibliotecas e modelos de IA.
+- Desenvolvimento de aplicações em tempo real.
 - Gerenciamento de projetos com Git e GitHub.
 
 ## ⚠️ Observações e Limitações
 
-- A idade apresentada pelo sistema é uma estimativa gerada pelo modelo.
-- As emoções são classificações computacionais baseadas em expressões faciais e não representam necessariamente o estado emocional real de uma pessoa.
-- A precisão dos resultados pode variar conforme iluminação, qualidade da imagem, posição do rosto e características do modelo utilizado.
-- Este projeto possui finalidade educacional e experimental, não sendo destinado a diagnósticos ou avaliações psicológicas.
+- A idade apresentada pelas aplicações é uma estimativa gerada pelo modelo.
+- As classificações de emoções são inferências computacionais baseadas em expressões faciais e não representam necessariamente o estado emocional real de uma pessoa.
+- A precisão dos resultados pode variar conforme iluminação, qualidade da imagem, posição do rosto e características dos modelos utilizados.
+- O VigilantEye ainda está em desenvolvimento e suas funcionalidades de identificação de sonolência são experimentais.
+- Os projetos possuem finalidade educacional e de estudo, não sendo destinados a diagnósticos ou avaliações psicológicas.
 
 ## 👨‍💻 Autor
 
@@ -157,8 +218,8 @@ Este projeto foi desenvolvido para colocar em prática conhecimentos relacionado
 Desenvolvedor em constante aprendizado, explorando Python, Inteligência Artificial e Visão Computacional.
 
 - GitHub: [MatheusBarb19](https://github.com/MatheusBarb19)
-- Repositório: [Reconhecimento Facial](https://github.com/MatheusBarb19/Reconhecimento-Facial)
+- Repositório: [Reconhecimento-Facial](https://github.com/MatheusBarb19/Reconhecimento-Facial)
 
 ---
 
-⭐ Se este projeto despertou seu interesse, fique à vontade para explorar o código e acompanhar minha evolução!
+⭐ Se este repositório despertou seu interesse, fique à vontade para explorar os projetos e acompanhar minha evolução!
