@@ -3,13 +3,6 @@
 VigilantEye é um software de monitoramento de sinais comportamentais
 e visuais associados à sonolência, fadiga e distração.
 
-Funcionalidades atuais:
-- Detecção facial em tempo real.
-- Monitoramento da abertura dos olhos (EAR).
-- Contagem de piscadas.
-- Identificação de fechamento prolongado dos olhos.
-- Monitoramento da abertura da boca (MAR).
-- Identificação e contagem de possíveis bocejos.
 """
 
 # --------- Importação de Bibliotecas --------- #
