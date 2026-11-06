@@ -29,38 +29,47 @@ if not caminho_modelo.exists():
     print(f"Erro: O arquivo do modelo não foi encontrado em {caminho_modelo}.")
     raise SystemExit
 
-
 # --------- Histórico de Eventos --------- #
 
-# Define o caminho do arquivo de histórico na pasta do projeto
+# Define o caminho do arquivo de histórico na pasta do projeto.
 ARQUIVO_HISTORICO = diretorio_python / "historico_eventos.jsonl"
+
+
+def formatar_data_hora(data_hora=None):
+    """
+    Formata a data e hora no padrão DD-MM-AAAA
+    e inclui o fuso horário.
+    """
+
+    if data_hora is None:
+        data_hora = datetime.now().astimezone()
+
+    horario = data_hora.strftime("%d-%m-%YT%H:%M:%S%z")
+
+    # Adiciona os dois pontos no fuso horário.
+    return horario[:-2] + ":" + horario[-2:]
 
 
 def registrar_evento(tipo_evento, **dados):
     """
-    Registra um evento identificado pelo VigilantEye.
-
-    Cada evento é armazenado em uma linha no formato JSONL.
+    Registra um evento identificado pelo VigilantEye
+    em formato JSONL.
     """
 
     evento = {
-        "data_hora": datetime.now().astimezone().isoformat(timespec="seconds"),
         "evento": tipo_evento,
         **dados
     }
 
     try:
-        # Abre o arquivo em modo de acréscimo, preservando registros anteriores
+        # Abre o arquivo em modo de acréscimo, preservando registros anteriores.
         with ARQUIVO_HISTORICO.open("a", encoding="utf-8") as arquivo:
-            arquivo.write(json.dumps(evento, ensure_ascii=False) + "\n")
+            arquivo.write(
+                json.dumps(evento, ensure_ascii=False) + "\n"
+            )
 
     except OSError as erro:
         print(f"Erro ao registrar evento: {erro}")
-    
-registrar_evento(
-    "TESTE_REGISTRO",
-    mensagem="Primeiro registro do VigilantEye"
-)
 
 # --------- Inicialização do MediaPipe --------- #
 
@@ -190,6 +199,8 @@ TEMPO_MAXIMO_PISCADA = 0.50
 
 # Variáveis de controle dos olhos.
 olhos_fechados_desde = None
+inicio_fechamento = None
+
 piscadas = 0
 status_olhos = "OLHOS ABERTOS"
 
@@ -204,6 +215,7 @@ TEMPO_MINIMO_BOCEJO = 1.0
 
 # Variáveis de controle da boca.
 boca_aberta_desde = None
+inicio_bocejo = None
 bocejos = 0
 status_boca = "BOCA FECHADA"
 
@@ -283,11 +295,10 @@ try:
                         # Registra o instante em que a boca começou a abrir.
                         if boca_aberta_desde is None:
                             boca_aberta_desde = tempo_atual
+                            inicio_bocejo = datetime.now().astimezone()
 
                         # Calcula há quanto tempo a boca permanece aberta.
-                        tempo_boca_aberta = (
-                            tempo_atual - boca_aberta_desde
-                        )
+                        tempo_boca_aberta = tempo_atual - boca_aberta_desde
 
                         # Verifica se a abertura é prolongada.
                         if tempo_boca_aberta >= TEMPO_MINIMO_BOCEJO:
@@ -300,29 +311,34 @@ try:
                         # Verifica se houve uma abertura anterior.
                         if boca_aberta_desde is not None:
 
-                            tempo_boca_aberta = (
-                                tempo_atual - boca_aberta_desde
-                            )
+                            tempo_boca_aberta = tempo_atual - boca_aberta_desde
 
-                            # Conta o possível bocejo quando a boca fecha.
+                            # Confirma e registra o possível bocejo.
                             if tempo_boca_aberta >= TEMPO_MINIMO_BOCEJO:
+
                                 bocejos += 1
+
+                                registrar_evento(
+                                    "BOCEJO",
+                                    inicio=formatar_data_hora(inicio_bocejo)
+                                )
 
                             # Reinicia o controle.
                             boca_aberta_desde = None
+                            inicio_bocejo = None
 
                         status_boca = "BOCA FECHADA"
-
-                    # Exibe o valor do MAR.
-                    cv2.putText(
-                        frame,
-                        f"MAR: {mar:.2f}",
-                        (30, 150),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.7,
-                        (255, 255, 0),
-                        2
-                    )
+                        
+                        # Exibe o valor do MAR.
+                        cv2.putText(
+                            frame,
+                            f"MAR: {mar:.2f}",
+                            (30, 150),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.7,
+                            (255, 255, 0),
+                            2
+                        )
 
                     # --------- Detecção de Piscadas --------- #
 
@@ -367,6 +383,7 @@ try:
                         # Registra o instante em que os olhos fecharam.
                         if olhos_fechados_desde is None:
                             olhos_fechados_desde = tempo_atual
+                            inicio_fechamento = datetime.now().astimezone()
 
                         # Calcula o tempo de fechamento.
                         tempo_fechado = (
@@ -387,6 +404,19 @@ try:
                             tempo_fechado = (
                                 tempo_atual - olhos_fechados_desde
                             )
+                            
+                            # Verifica se o fechamento foi prolongado.
+                            if tempo_fechado >= TEMPO_FECHAMENTO_PROLONGADO:
+
+                                # Registra o horário em que os olhos foram abertos.
+                                fim_fechamento = datetime.now().astimezone()
+
+                                registrar_evento(
+                                    "FECHAMENTO_OLHOS_PROLONGADO",
+                                    inicio=formatar_data_hora(inicio_fechamento),
+                                    fim=formatar_data_hora(fim_fechamento),
+                                    duracao_segundos=round(tempo_fechado, 2)
+                                )
 
                             # Conta somente fechamentos dentro do intervalo
                             # inicial definido para uma piscada.
@@ -399,6 +429,7 @@ try:
 
                             # Reinicia o controle.
                             olhos_fechados_desde = None
+                            inicio_fechamento = None
 
                         status_olhos = "OLHOS ABERTOS"
 
