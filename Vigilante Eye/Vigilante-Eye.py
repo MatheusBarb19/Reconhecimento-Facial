@@ -29,6 +29,7 @@ if not caminho_modelo.exists():
     print(f"Erro: O arquivo do modelo não foi encontrado em {caminho_modelo}.")
     raise SystemExit
 
+
 # --------- Histórico de Eventos --------- #
 
 # Define o caminho do arquivo de histórico na pasta do projeto.
@@ -70,6 +71,7 @@ def registrar_evento(tipo_evento, **dados):
 
     except OSError as erro:
         print(f"Erro ao registrar evento: {erro}")
+
 
 # --------- Inicialização do MediaPipe --------- #
 
@@ -216,6 +218,7 @@ TEMPO_MINIMO_BOCEJO = 1.0
 # Variáveis de controle da boca.
 boca_aberta_desde = None
 inicio_bocejo = None
+
 bocejos = 0
 status_boca = "BOCA FECHADA"
 
@@ -277,6 +280,7 @@ try:
             # Obtém o tempo atual para os cálculos de duração.
             tempo_atual = time.monotonic()
 
+
             # --------- Verificação de Detecção Facial --------- #
 
             if resultado.face_landmarks:
@@ -328,17 +332,18 @@ try:
                             inicio_bocejo = None
 
                         status_boca = "BOCA FECHADA"
-                        
-                        # Exibe o valor do MAR.
-                        cv2.putText(
-                            frame,
-                            f"MAR: {mar:.2f}",
-                            (30, 150),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            0.7,
-                            (255, 255, 0),
-                            2
-                        )
+
+                    # Exibe o valor do MAR independentemente do estado da boca.
+                    cv2.putText(
+                        frame,
+                        f"MAR: {mar:.2f}",
+                        (30, 150),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.7,
+                        (255, 255, 0),
+                        2
+                    )
+
 
                     # --------- Detecção de Piscadas --------- #
 
@@ -362,7 +367,6 @@ try:
                         for indice in pontos_olho:
 
                             ponto = rosto[indice]
-
                             x_pixel = int(ponto.x * largura)
                             y_pixel = int(ponto.y * altura)
 
@@ -376,6 +380,9 @@ try:
 
                     # Calcula a média do EAR dos dois olhos.
                     ear_medio = sum(valores_ear) / len(valores_ear)
+
+
+                    # --------- Análise do Estado dos Olhos --------- #
 
                     # Verifica se os olhos estão fechados.
                     if ear_medio < LIMIAR_EAR:
@@ -404,7 +411,7 @@ try:
                             tempo_fechado = (
                                 tempo_atual - olhos_fechados_desde
                             )
-                            
+
                             # Verifica se o fechamento foi prolongado.
                             if tempo_fechado >= TEMPO_FECHAMENTO_PROLONGADO:
 
@@ -432,6 +439,7 @@ try:
                             inicio_fechamento = None
 
                         status_olhos = "OLHOS ABERTOS"
+
 
                     # --------- Exibição das Informações --------- #
 
@@ -494,12 +502,16 @@ try:
                         2
                     )
 
+
             else:
 
                 # Se o rosto desaparecer, reinicia os controles de duração.
                 # Isso evita que um período sem detecção seja contabilizado.
                 olhos_fechados_desde = None
+                inicio_fechamento = None
+
                 boca_aberta_desde = None
+                inicio_bocejo = None
 
                 status_olhos = "ROSTO NAO DETECTADO"
                 status_boca = "ROSTO NAO DETECTADO"
@@ -536,6 +548,7 @@ try:
                     2
                 )
 
+
             # --------- Exibição do Resultado --------- #
 
             cv2.imshow(
@@ -546,6 +559,7 @@ try:
             # Encerra quando a tecla ESC for pressionada.
             if cv2.waitKey(1) == 27:
                 break
+
 
 finally:
 
