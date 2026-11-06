@@ -2,7 +2,6 @@
 """
 VigilantEye é um software de monitoramento de sinais comportamentais
 e visuais associados à sonolência, fadiga e distração.
-
 """
 
 # --------- Importação de Bibliotecas --------- #
@@ -34,6 +33,9 @@ if not caminho_modelo.exists():
 
 # Define o caminho do arquivo de histórico na pasta do projeto.
 ARQUIVO_HISTORICO = diretorio_python / "historico_eventos.jsonl"
+
+# Define a pasta onde serão armazenados os relatórios das sessões.
+PASTA_RELATORIOS = diretorio_python / "relatorios_sessoes"
 
 
 def formatar_data_hora(data_hora=None):
@@ -71,6 +73,81 @@ def registrar_evento(tipo_evento, **dados):
 
     except OSError as erro:
         print(f"Erro ao registrar evento: {erro}")
+
+
+# --------- Relatório da Sessão --------- #
+
+def salvar_relatorio_sessao(relatorio):
+    """
+    Salva os dados da sessão em um arquivo JSON individual.
+    Cada sessão terá seu próprio relatório.
+    """
+
+    try:
+        # Cria a pasta de relatórios caso ela ainda não exista.
+        PASTA_RELATORIOS.mkdir(parents=True, exist_ok=True)
+
+        # Utiliza o identificador da sessão no nome do arquivo.
+        nome_arquivo = (
+            f"relatorio_{relatorio['id_sessao']}.json"
+        )
+
+        caminho_relatorio = PASTA_RELATORIOS / nome_arquivo
+
+        # Salva o relatório em formato JSON.
+        with caminho_relatorio.open("w", encoding="utf-8") as arquivo:
+            json.dump(
+                relatorio,
+                arquivo,
+                ensure_ascii=False,
+                indent=4
+            )
+
+        print(f"\nRelatório salvo em: {caminho_relatorio}")
+
+    except OSError as erro:
+        print(f"Erro ao salvar o relatório da sessão: {erro}")
+
+
+def exibir_relatorio_sessao(relatorio):
+    """
+    Exibe no terminal o resumo da sessão de monitoramento.
+    """
+
+    duracao = relatorio["duracao_segundos"]
+
+    horas = int(duracao // 3600)
+    minutos = int((duracao % 3600) // 60)
+    segundos = int(duracao % 60)
+
+    print("\n" + "=" * 45)
+    print("       VIGILANTEYE - RELATÓRIO DA SESSÃO")
+    print("=" * 45)
+
+    print(f"ID da sessão: {relatorio['id_sessao']}")
+    print(f"Início: {relatorio['inicio']}")
+    print(f"Término: {relatorio['fim']}")
+
+    print(
+        f"Duração: {horas:02d}:{minutos:02d}:{segundos:02d}"
+    )
+
+    print("-" * 45)
+
+    print(f"Piscadas identificadas: {relatorio['piscadas']}")
+    print(f"Bocejos identificados: {relatorio['bocejos']}")
+
+    print(
+        "Fechamentos prolongados: "
+        f"{relatorio['fechamentos_prolongados']}"
+    )
+
+    print(
+        "Maior fechamento dos olhos: "
+        f"{relatorio['maior_fechamento_olhos_segundos']:.2f} segundos"
+    )
+
+    print("=" * 45)
 
 
 # --------- Inicialização do MediaPipe --------- #
@@ -204,6 +281,9 @@ olhos_fechados_desde = None
 inicio_fechamento = None
 
 piscadas = 0
+fechamentos_prolongados = 0
+maior_fechamento_olhos = 0.0
+
 status_olhos = "OLHOS ABERTOS"
 
 
@@ -234,6 +314,18 @@ if not webcam.isOpened():
     raise SystemExit
 
 print("Webcam inicializada com sucesso!")
+
+
+# --------- Controle da Sessão --------- #
+
+# Registra o início da sessão utilizando data, hora e relógio monotônico.
+inicio_sessao = datetime.now().astimezone()
+tempo_inicio_sessao = time.monotonic()
+
+# Cria um identificador único baseado no horário de início.
+id_sessao = inicio_sessao.strftime("%Y%m%d_%H%M%S")
+
+print(f"Sessão iniciada: {formatar_data_hora(inicio_sessao)}")
 
 
 # --------- Processamento de Quadros da Webcam --------- #
@@ -418,6 +510,15 @@ try:
                                 # Registra o horário em que os olhos foram abertos.
                                 fim_fechamento = datetime.now().astimezone()
 
+                                # Atualiza o contador de fechamentos prolongados.
+                                fechamentos_prolongados += 1
+
+                                # Atualiza o maior tempo de fechamento registrado.
+                                maior_fechamento_olhos = max(
+                                    maior_fechamento_olhos,
+                                    tempo_fechado
+                                )
+
                                 registrar_evento(
                                     "FECHAMENTO_OLHOS_PROLONGADO",
                                     inicio=formatar_data_hora(inicio_fechamento),
@@ -567,4 +668,32 @@ finally:
     webcam.release()
     cv2.destroyAllWindows()
 
-    print("Monitoramento encerrado.")
+    # Registra o término da sessão.
+    fim_sessao = datetime.now().astimezone()
+    tempo_fim_sessao = time.monotonic()
+
+    # Calcula a duração total utilizando o relógio monotônico.
+    duracao_sessao = tempo_fim_sessao - tempo_inicio_sessao
+
+    # Organiza os dados da sessão.
+    relatorio = {
+        "id_sessao": id_sessao,
+        "inicio": formatar_data_hora(inicio_sessao),
+        "fim": formatar_data_hora(fim_sessao),
+        "duracao_segundos": round(duracao_sessao, 2),
+        "piscadas": piscadas,
+        "bocejos": bocejos,
+        "fechamentos_prolongados": fechamentos_prolongados,
+        "maior_fechamento_olhos_segundos": round(
+            maior_fechamento_olhos,
+            2
+        )
+    }
+
+    # Exibe o resumo da sessão.
+    exibir_relatorio_sessao(relatorio)
+
+    # Salva o relatório em JSON.
+    salvar_relatorio_sessao(relatorio)
+
+    print("\nMonitoramento encerrado.")
