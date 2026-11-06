@@ -19,6 +19,8 @@ import mediapipe as mp
 import time
 import math
 from pathlib import Path
+import json
+from datetime import datetime
 
 
 # --------- Localização do Modelo --------- #
@@ -34,6 +36,38 @@ if not caminho_modelo.exists():
     print(f"Erro: O arquivo do modelo não foi encontrado em {caminho_modelo}.")
     raise SystemExit
 
+
+# --------- Histórico de Eventos --------- #
+
+# Define o caminho do arquivo de histórico na pasta do projeto
+ARQUIVO_HISTORICO = diretorio_python / "historico_eventos.jsonl"
+
+
+def registrar_evento(tipo_evento, **dados):
+    """
+    Registra um evento identificado pelo VigilantEye.
+
+    Cada evento é armazenado em uma linha no formato JSONL.
+    """
+
+    evento = {
+        "data_hora": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "evento": tipo_evento,
+        **dados
+    }
+
+    try:
+        # Abre o arquivo em modo de acréscimo, preservando registros anteriores
+        with ARQUIVO_HISTORICO.open("a", encoding="utf-8") as arquivo:
+            arquivo.write(json.dumps(evento, ensure_ascii=False) + "\n")
+
+    except OSError as erro:
+        print(f"Erro ao registrar evento: {erro}")
+    
+registrar_evento(
+    "TESTE_REGISTRO",
+    mensagem="Primeiro registro do VigilantEye"
+)
 
 # --------- Inicialização do MediaPipe --------- #
 
